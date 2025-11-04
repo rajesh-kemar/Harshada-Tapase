@@ -1,0 +1,28 @@
+<div class="dashboard-container">
+
+  <!-- Dashboard Header -->
+  <div class="dashboard-header">
+    <h1>📊 Fleet Management Dashboard</h1>
+    <p>Monitor your trips, drivers, and vehicle activity at a glance</p>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <mat-card class="stat-card" *ngFor="let stat of stats">
+      <h3>{{ stat.title }}</h3>
+      <h1>{{ stat.value }}</h1>
+    </mat-card>
+  </div>
+
+  <!-- Chart Section -->
+  <div class="chart-section">
+    <mat-card class="chart-card">
+      <h2>Trip Status Overview</h2>
+      <canvas
+        baseChart
+        [data]="tripChartData"
+        [type]="tripChartType">
+      </canvas>
+    </mat-card>
+  </div>
+</div>

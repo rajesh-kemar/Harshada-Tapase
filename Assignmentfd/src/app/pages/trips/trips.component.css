@@ -1,0 +1,161 @@
+/* .trip-container {
+  max-width: 1000px;
+  margin: 20px auto;
+  font-family: Arial, sans-serif;
+}
+
+h2 {
+  color: #333;
+}
+
+.trip-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.trip-form input,
+.trip-form select {
+  flex: 1;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.trip-form button {
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+
+.trip-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.trip-table th,
+.trip-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+.trip-table th {
+  background-color: #f5f5f5;
+}
+
+button {
+  margin: 0 4px;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: 0.8;
+}
+
+button:nth-child(1) {
+  background-color: #4caf50;
+  color: white;
+}
+
+button:nth-child(2) {
+  background-color: #f44336;
+  color: white;
+} */
+h2, h3 {
+  text-align: center;
+  color: #2b3a67;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 1rem;
+}
+
+.form-container, .edit-form-container {
+  background: #ffffff;
+  padding: 2rem;
+  margin: 1rem auto;
+  max-width: 900px;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+label {
+  display: block;
+  font-weight: 500;
+  margin-top: 10px;
+  color: #374151;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  transition: border 0.3s ease;
+}
+
+input:focus, select:focus {
+  border-color: #6366f1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+button {
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: #4338ca;
+}
+
+.list-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+th, td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+}
+
+th {
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #f9fafb;
+}
+
+.edit-form-container button[type="button"] {
+  background-color: #6b7280;
+  margin-left: 8px;
+}
+
+.edit-form-container button[type="button"]:hover {
+  background-color: #4b5563;
+}

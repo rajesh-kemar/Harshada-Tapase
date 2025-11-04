@@ -1,0 +1,16 @@
+.toolbar {
+  background: linear-gradient(90deg, #1976d2, #42a5f5);
+  color: #fff;
+}
+.title {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+.spacer {
+  flex: 1 1 auto;
+}
+a {
+  color: white;
+  text-transform: uppercase;
+  margin: 0 10px;
+}

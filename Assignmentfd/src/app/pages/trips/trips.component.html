@@ -1,0 +1,96 @@
+<h2>Trip Management</h2>
+
+<!-- Add New Trip -->
+<div class="form-container">
+  <h3>Add New Trip</h3>
+  <form (ngSubmit)="addTrip()" #tripForm="ngForm">
+    <label for="destination">Destination:</label>
+    <input id="destination" [(ngModel)]="newTrip.destination" name="destination" required />
+
+    <label for="driverId">Driver ID:</label>
+    <input id="driverId" type="number" [(ngModel)]="newTrip.driverId" name="driverId" required />
+
+    <label for="vehicleId">Vehicle ID:</label>
+    <input id="vehicleId" type="number" [(ngModel)]="newTrip.vehicleId" name="vehicleId" required />
+
+    <label for="startTime">Start Time:</label>
+    <input id="startTime" type="datetime-local" [(ngModel)]="newTrip.startTime" name="startTime" required />
+
+    <label for="endTime">End Time:</label>
+    <input id="endTime" type="datetime-local" [(ngModel)]="newTrip.endTime" name="endTime" />
+
+    <label for="status">Status:</label>
+    <select id="status" [(ngModel)]="newTrip.status" name="status">
+      <option value="Pending">Pending</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+
+    <button type="submit">Add Trip</button>
+  </form>
+</div>
+
+<!-- Trip List -->
+<div class="list-container">
+  <h3>Trips</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Destination</th>
+        <th>Driver ID</th>
+        <th>Vehicle ID</th>
+        <th>Status</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let trip of trips">
+        <td>{{ trip.tripId }}</td>
+        <td>{{ trip.destination }}</td>
+        <td>{{ trip.driverId }}</td>
+        <td>{{ trip.vehicleId }}</td>
+        <td>{{ trip.status }}</td>
+        <td>{{ trip.startTime | date: 'short' }}</td>
+        <td>{{ trip.endTime | date: 'short' }}</td>
+        <td>
+          <button (click)="editTrip(trip)">Edit</button>
+          <button (click)="deleteTrip(trip.tripId)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Edit Trip -->
+<div *ngIf="selectedTrip" class="edit-form-container">
+  <h3>Edit Trip</h3>
+  <form (ngSubmit)="updateTrip()" #editForm="ngForm">
+    <label>Destination:</label>
+    <input [(ngModel)]="selectedTrip.destination" name="editDestination" required />
+
+    <label>Driver ID:</label>
+    <input type="number" [(ngModel)]="selectedTrip.driverId" name="editDriverId" required />
+
+    <label>Vehicle ID:</label>
+    <input type="number" [(ngModel)]="selectedTrip.vehicleId" name="editVehicleId" required />
+
+    <label>Status:</label>
+    <select [(ngModel)]="selectedTrip.status" name="editStatus">
+      <option value="Pending">Pending</option>
+      <option value="In Progress">In Progress</option>
+      <option value="Completed">Completed</option>
+    </select>
+
+    <label>Start Time:</label>
+    <input type="datetime-local" [(ngModel)]="selectedTrip.startTime" name="editStartTime" />
+
+    <label>End Time:</label>
+    <input type="datetime-local" [(ngModel)]="selectedTrip.endTime" name="editEndTime" />
+
+    <button type="submit">Update</button>
+    <button type="button" (click)="cancelEdit()">Cancel</button>
+  </form>
+</div>

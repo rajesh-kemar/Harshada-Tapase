@@ -1,0 +1,129 @@
+
+<!-- <div class="container mt-3">
+  <h2>Vehicles</h2>
+
+
+  <div class="mb-3">
+    <input [(ngModel)]="newVehicle.model" placeholder="Model" class="form-control mb-2" />
+    <input [(ngModel)]="newVehicle.licensePlate" placeholder="License Plate" class="form-control mb-2" />
+    <label>
+      <input type="checkbox" [(ngModel)]="newVehicle.isAvailable" /> Available
+    </label>
+    <button class="btn btn-primary mt-2" (click)="addVehicle()">Add Vehicle</button>
+  </div>
+
+  <hr />
+
+ 
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>License Plate</th>
+        <th>Available</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let vehicle of vehicles">
+        <td>{{ vehicle.model }}</td>
+        <td>{{ vehicle.licensePlate }}</td>
+        <td>{{ vehicle.isAvailable ? 'Yes' : 'No' }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-2" (click)="editVehicle(vehicle)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteVehicle(vehicle.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+ 
+  <div *ngIf="selectedVehicle" class="mt-3">
+    <h3>Edit Vehicle</h3>
+    <input [(ngModel)]="selectedVehicle.model" class="form-control mb-2" />
+    <input [(ngModel)]="selectedVehicle.licensePlate" class="form-control mb-2" />
+    <label>
+      <input type="checkbox" [(ngModel)]="selectedVehicle.isAvailable" /> Available
+    </label>
+    <button class="btn btn-success mt-2" (click)="updateVehicle()">Update</button>
+  </div>
+</div> -->
+<div class="container mt-3">
+  <h2>Vehicles</h2>
+
+  <!-- Add Vehicle -->
+  <div class="mb-3">
+    <input
+      [(ngModel)]="newVehicle.model"
+      placeholder="Model"
+      class="form-control mb-2"
+    />
+    <input
+      [(ngModel)]="newVehicle.licensePlate"
+      placeholder="License Plate"
+      class="form-control mb-2"
+    />
+    <label>
+      <input type="checkbox" [(ngModel)]="newVehicle.isAvailable" /> Available
+    </label>
+    <button class="btn btn-primary mt-2" (click)="addVehicle()">Add Vehicle</button>
+  </div>
+
+  <hr />
+
+  <!-- Vehicle Table -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>License Plate</th>
+        <th>Available</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let vehicle of vehicles">
+        <td>{{ vehicle.model }}</td>
+        <td>{{ vehicle.licensePlate }}</td>
+        <td>{{ vehicle.isAvailable ? 'Yes' : 'No' }}</td>
+        <td>
+          <button
+            class="btn btn-sm btn-info me-2"
+            (click)="editVehicle(vehicle)"
+          >
+            Edit
+          </button>
+          <button
+            class="btn btn-sm btn-danger"
+            (click)="deleteVehicle(vehicle.vehicleId)" 
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Edit Vehicle -->
+  <div *ngIf="selectedVehicle" class="mt-3">
+    <h3>Edit Vehicle</h3>
+    <input
+      [(ngModel)]="selectedVehicle.model"
+      class="form-control mb-2"
+      placeholder="Model"
+    />
+    <input
+      [(ngModel)]="selectedVehicle.licensePlate"
+      class="form-control mb-2"
+      placeholder="License Plate"
+    />
+    <label>
+      <input
+        type="checkbox"
+        [(ngModel)]="selectedVehicle.isAvailable"
+      />
+      Available
+    </label>
+    <button class="btn btn-success mt-2" (click)="updateVehicle()">Update</button>
+  </div>
+</div>
