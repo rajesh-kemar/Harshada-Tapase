@@ -1,0 +1,51 @@
+<div class="page">
+  <h2>Drivers</h2>
+
+  <!-- Hide the 'Create Driver' form if the user is a Driver -->
+  <div class="form-card" *ngIf="currentUserRole === 'Dispatcher'">
+    <h3>Create Driver</h3>
+    <form [formGroup]="form" (ngSubmit)="create()">
+      <label>UserId (from registered user)</label>
+      <input formControlName="userId" />
+      <label>Driver Name</label>
+      <input formControlName="driverName" />
+      <label>Experience (years)</label>
+      <input type="number" formControlName="experience" />
+      <label>Licence Number</label>
+      <input formControlName="licenceNumber" />
+      <button type="submit" [disabled]="form.invalid">Create Driver</button>
+    </form>
+
+    <div class="err" *ngIf="error">{{ error }}</div>
+    <div class="success" *ngIf="success">{{ success }}</div>
+  </div>
+
+  <div class="list">
+    <h3>{{ currentUserRole === 'Dispatcher' ? 'All Drivers' : 'My Details' }}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>UserId</th>
+          <th>Name</th>
+          <th>Exp</th>
+          <th>Licence</th>
+          <!-- Hide the Actions column header if user is a Driver -->
+          <th *ngIf="currentUserRole === 'Dispatcher'">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of drivers">
+          <td>{{d.driverId}}</td>
+          <td>{{d.userId}}</td>
+          <td>{{d.driverName}}</td>
+          <td>{{d.experience}}</td>
+          <td>{{d.licenceNumber}}</td>
+          <!-- Hide the Delete button if user is a Driver -->
+          <td *ngIf="currentUserRole === 'Dispatcher'"><button (click)="delete(d.driverId)">Delete</button><button (click)="delete(d.driverId)">Edit</button></td>
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

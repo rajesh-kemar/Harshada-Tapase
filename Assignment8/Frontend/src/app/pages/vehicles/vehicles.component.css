@@ -1,0 +1,31 @@
+.page { padding:16px; }
+.form-card { margin-bottom:16px; border:1px solid #eee; padding:12px; border-radius:6px; }
+table { width:100%; border-collapse:collapse; }
+th, td { border:1px solid #eee; padding:8px; }
+.err { color:#c00; }
+.success { color:green; }
+/* Styling for the info message displayed to drivers */
+.info-message {
+  /* Colors for the message */
+  background-color: #e6f7ff; /* A light blue background */
+  border: 1px solid #b3e0ff; /* A blue border */
+  color: #0056b3;           /* Dark blue text color */
+
+  /* Spacing and layout */
+  padding: 15px;            /* Inner spacing */
+  margin-bottom: 20px;      /* Spacing below the message */
+  border-radius: 5px;       /* Rounded corners */
+  text-align: center;       /* Center the text */
+  font-size: 16px;          /* Font size */
+  font-weight: 500;         /* Semi-bold font weight */
+
+  /* Visual effects (optional) */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: background-color 0.3s ease;   /* Smooth color transition */
+}
+
+/* Optional: Add a hover effect */
+.info-message:hover {
+  background-color: #d0efff;
+}
+

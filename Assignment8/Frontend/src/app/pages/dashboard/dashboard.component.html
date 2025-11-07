@@ -1,0 +1,35 @@
+<div class="dashboard-container" *ngIf="!loading; else loadingBlock">
+
+  <!-- Welcome Message -->
+  <h2>Welcome, {{ currentUsername }} ({{ currentUserRole }})</h2>
+
+  <!-- CARD SECTION -->
+  <div class="stats-grid">
+
+    <mat-card class="stat-card" *ngFor="let s of stats">
+      <div class="stat-title">{{ s.title }}</div>
+      <div class="stat-value">{{ s.value }}</div>
+    </mat-card>
+
+  </div>
+
+  <!-- CHART SECTION -->
+  <mat-card class="chart-card">
+    <div class="chart-title">Trip Overview</div>
+
+    <canvas
+      baseChart
+      [data]="tripChartData"
+      [type]="tripChartType">
+    </canvas>
+  </mat-card>
+
+</div>
+
+<!-- LOADING BLOCK -->
+<ng-template #loadingBlock>
+  <div class="loading-container">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Loading Dashboard...</p>
+  </div>
+</ng-template>

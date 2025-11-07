@@ -1,0 +1,7 @@
+.page { padding:16px; }
+.form-card { margin-bottom:16px; border:1px solid #eee; padding:12px; border-radius:6px; }
+table { width:100%; border-collapse:collapse; }
+th, td { border:1px solid #eee; padding:8px; }
+button { padding:6px 10px; }
+.err { color:#c00; }
+.success { color:green; }

@@ -1,0 +1,19 @@
+<nav class="navbar">
+  <div class="nav-logo">🚚 Logistics Management</div>
+  <div class="nav-links">
+    <a routerLink="" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Dashboard</a>
+    <a routerLink="trips" routerLinkActive="active">Trips</a>
+    <a routerLink="drivers" routerLinkActive="active">Drivers</a>
+    <a routerLink="vehicles" routerLinkActive="active">Vehicles</a>
+    <a routerLink="login" routerLinkActive="active" class="auth-link">Logout</a>
+   
+  </div>
+</nav>
+
+<hr class="divider" />
+
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+

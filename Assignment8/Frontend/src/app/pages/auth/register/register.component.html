@@ -1,0 +1,42 @@
+<div class="auth-card">
+  <h2>Register</h2>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label>Name</label>
+    <input formControlName="name" />
+    <div class="err" *ngIf="form.get('name')?.touched && form.get('name')?.invalid">Required</div>
+
+    <label>Username</label>
+    <input formControlName="username" />
+    <div class="err" *ngIf="form.get('username')?.touched && form.get('username')?.invalid">Required</div>
+
+    <label>Email</label>
+    <input formControlName="email" />
+    <div class="err" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">Valid email required</div>
+
+    <label>Password</label>
+    <input type="password" formControlName="password" />
+    <div class="err" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">Min 6 chars</div>
+
+    <label>Role</label>
+    <select formControlName="role">
+      <option value="Driver">Driver</option>
+      <option value="Dispatcher">Dispatcher</option>
+    </select>
+
+    <!-- shown only when role === Driver -->
+    <div *ngIf="form.get('role')?.value === 'Driver'">
+      <label>Experience (years)</label>
+      <input type="number" formControlName="experience" />
+      <div class="err" *ngIf="form.get('experience')?.touched && form.get('experience')?.invalid">Required</div>
+
+      <label>Licence Number (e.g. MH12-ER-1234)</label>
+      <input formControlName="licenceNumber" />
+      <div class="err" *ngIf="form.get('licenceNumber')?.touched && form.get('licenceNumber')?.invalid">Required</div>
+    </div>
+
+    <button type="submit">Register</button>
+  </form>
+
+  <div class="err" *ngIf="error">{{ error }}</div>
+  <div class="success" *ngIf="success">{{ success }}</div>
+</div>

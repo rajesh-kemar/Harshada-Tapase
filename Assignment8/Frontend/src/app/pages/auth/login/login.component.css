@@ -1,0 +1,5 @@
+.auth-card { max-width:420px; margin:40px auto; padding:20px; border:1px solid #ddd; border-radius:8px; }
+label { display:block; margin-top:10px; font-weight:600; }
+input { width:100%; padding:8px; margin-top:6px; box-sizing:border-box; }
+button { margin-top:14px; padding:8px 16px; }
+.err { color:#c00; margin-top:6px; }
