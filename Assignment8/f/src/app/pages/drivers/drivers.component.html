@@ -1,0 +1,82 @@
+<div class="page">
+
+
+  <h2>Drivers</h2>
+
+  <div class="err" *ngIf="error">{{ error }}</div>
+  <div class="success" *ngIf="success">{{ success }}</div>
+
+  <!-- EDIT DRIVER FORM (Conditional Display for Dispatcher when isEditing is true) -->
+  <div class="edit-card" *ngIf="isEditing && currentUserRole === 'Dispatcher'">
+    <h3>Edit Driver (ID: {{ editingDriverId }})</h3>
+    <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
+      
+   
+      
+      <!-- UserId is read-only when editing (assuming it's present in the form value) -->
+      <label>UserId</label>
+      <input [value]="editForm.value.userId" disabled style="background-color: #eee;" />
+
+      <label>Driver Name</label>
+      <input formControlName="driverName" />
+      
+      <label>Experience (years)</label>
+      <input type="number" formControlName="experience" />
+      
+      <label>Licence Number</label>
+      <input formControlName="licenceNumber" />
+      
+      <button type="submit"  class="edit-btn">Save Changes</button>
+      <button type="button" (click)="cancelEdit()" class="cancel-btn">Cancel Edit</button>
+    </form>
+  </div>
+
+
+  <!-- Hide the 'Create Driver' form if the user is a Driver or if currently editing -->
+  <div class="form-card" *ngIf="currentUserRole === 'Dispatcher' && !isEditing">
+    <h3>Create Driver</h3>
+    <form [formGroup]="form" (ngSubmit)="create()">
+      <label>UserId (from registered user)</label>
+      <input formControlName="userId" />
+      <label>Driver Name</label>
+      <input formControlName="driverName" />
+      <label>Experience (years)</label>
+      <input type="number" formControlName="experience" />
+      <label>Licence Number</label>
+      <input formControlName="licenceNumber" />
+      <button type="submit">Create Driver</button>
+    </form>
+  </div>
+
+  <div class="list">
+    <h3>{{ currentUserRole === 'Dispatcher' ? 'All Drivers' : 'My Details' }}</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>UserId</th>
+          <th>Name</th>
+          <th>Exp</th>
+          <th>Licence</th>
+          <!-- Hide the Actions column header if user is a Driver -->
+          <th *ngIf="currentUserRole === 'Dispatcher'">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let d of drivers">
+          <td>{{d.driverId}}</td>
+          <td>{{d.userId}}</td>
+          <td>{{d.driverName}}</td>
+          <td>{{d.experience}}</td>
+          <td>{{d.licenceNumber}}</td>
+          <!-- Dispatcher Actions Column -->
+          <td *ngIf="currentUserRole === 'Dispatcher'">
+            <!-- Disable actions while the edit form is open -->
+            <button (click)="startEdit(d)" class="edit-btn" >Edit</button>
+            <button (click)="delete(d.driverId)" class="delete-btn" >Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+<div class="page">
+  <h2>Vehicles</h2>
+
+  <div class="form-card" *ngIf="currentUserRole === 'Dispatcher'">
+    <h3>Create Vehicle</h3>
+    <form [formGroup]="form" (ngSubmit)="create()">
+      <label>Vehicle Name</label>
+      <input formControlName="vehicleName" 
+             [class.is-invalid]="form.get('vehicleName')?.invalid && form.get('vehicleName')?.touched" />
+
+      <label>Vehicle Type</label>
+      <input formControlName="vehicleType" 
+             [class.is-invalid]="form.get('vehicleType')?.invalid && form.get('vehicleType')?.touched" />
+
+      <label>Vehicle Number (LL##-LL-####)</label>
+      <input formControlName="vehicleNumber" 
+             [class.is-invalid]="form.get('vehicleNumber')?.invalid && form.get('vehicleNumber')?.touched" />
+      <div *ngIf="form.get('vehicleNumber')?.errors && form.get('vehicleNumber')?.touched" class="err">
+        <div *ngIf="form.get('vehicleNumber')?.errors?.['required']">Number is required.</div>
+        <div *ngIf="form.get('vehicleNumber')?.errors?.['pattern']">Format must be LL##-LL-#### (e.g., MH12-ER-1234).</div>
+      </div>
+
+      <label>Capacity (tons)</label>
+      <input type="number" formControlName="capacity" 
+             [class.is-invalid]="form.get('capacity')?.invalid && form.get('capacity')?.touched" />
+
+      <button type="submit" [disabled]="form.invalid">Create Vehicle</button>
+    </form>
+
+    <div class="err" *ngIf="error">{{ error }}</div>
+    <div class="success" *ngIf="success">{{ success }}</div>
+  </div>
+
+  <div class="list">
+    <h3>All Vehicles</h3>
+
+    <div *ngIf="currentUserRole === 'Driver'" class="info-message">
+      You are viewing available fleet vehicles. Only dispatchers can add or manage this list.
+    </div>
+
+
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Number</th>
+          <th>Capacity</th>
+          <th *ngIf="currentUserRole === 'Dispatcher'">Actions</th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <ng-container *ngFor="let v of vehicles">
+          
+          <tr *ngIf="editingVehicleId !== v.vehicleId">
+            <td>{{v.vehicleId}}</td>
+            <td>{{v.vehicleName}}</td>
+            <td>{{v.vehicleType}}</td>
+            <td>{{v.vehicleNumber}}</td>
+            <td>{{v.capacity}}</td>
+            
+            <td *ngIf="currentUserRole === 'Dispatcher'">
+              <button (click)="startEdit(v)" class="btn-edit">Edit</button>
+              <button (click)="delete(v.vehicleId)" class="btn-delete">Delete</button>
+            </td>
+          </tr>
+
+          <tr *ngIf="editingVehicleId === v.vehicleId" [formGroup]="editForm">
+            <td>{{v.vehicleId}}</td>
+            
+            <td><input formControlName="vehicleName" class="form-control" [class.is-invalid]="editForm.get('vehicleName')?.invalid"></td>
+            
+            <td><input formControlName="vehicleType" class="form-control" [class.is-invalid]="editForm.get('vehicleType')?.invalid"></td>
+            
+            <td>
+              <input formControlName="vehicleNumber" class="form-control" [class.is-invalid]="editForm.get('vehicleNumber')?.invalid">
+              <div *ngIf="editForm.get('vehicleNumber')?.errors?.['pattern'] && (editForm.get('vehicleNumber')?.dirty || editForm.get('vehicleNumber')?.touched)" class="err-inline">
+                Format invalid.
+              </div>
+            </td>
+            
+           <td><input type="number" formControlName="capacity" class="form-control"></td>
+            <td *ngIf="currentUserRole === 'Dispatcher'">
+              <button (click)="saveEdit()" [disabled]="editForm.invalid" class="btn-save">Save</button>
+              <button (click)="cancelEdit()" class="btn-cancel">Cancel</button>
+            </td>
+          </tr>
+
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
