@@ -1,0 +1,131 @@
+<div class="page">
+ 
+  <h2>Trip Management 🚌</h2>
+
+  <div class="form-card" *ngIf="currentUser?.role === 'Dispatcher'">
+    <h3>{{ isEditing ? 'Edit Trip #' + currentTripId : 'Create New Trip' }}</h3>
+    <button *ngIf="isEditing" (click)="resetForm()" class="cancel-edit-btn">Cancel Edit</button> 
+    
+    <form [formGroup]="form" (ngSubmit)="submitForm()">
+      
+      <div class="form-group">
+        <label for="driverId">Driver *</label>
+        <select id="driverId" formControlName="driverId" required>
+          <option value="" disabled>Select Driver</option>
+          <option *ngFor="let d of drivers" [value]="d.driverId">{{d.driverName}} (User: {{d.userId}})</option>
+        </select>
+        <div class="validation-error" *ngIf="form.get('driverId')?.invalid && form.get('driverId')?.touched">Driver is required</div>
+      </div>
+
+      <div class="form-group">
+        <label for="vehicleId">Vehicle *</label>
+        <select id="vehicleId" formControlName="vehicleId" required>
+          <option value="" disabled>Select Vehicle</option>
+          <option *ngFor="let v of vehicles" [value]="v.vehicleId">{{v.vehicleName}} - {{v.vehicleNumber}}</option>
+        </select>
+        <div class="validation-error" *ngIf="form.get('vehicleId')?.invalid && form.get('vehicleId')?.touched">Vehicle is required</div>
+      </div>
+
+      <div class="form-group">
+        <label for="source">Source *</label>
+        <input id="source" formControlName="source" type="text" maxlength="100" required/>
+        <div class="validation-error" *ngIf="form.get('source')?.invalid && form.get('source')?.touched">Source is required (Max 100 chars)</div>
+      </div>
+
+      <div class="form-group">
+        <label for="destination">Destination *</label>
+        <input id="destination" formControlName="destination" type="text" maxlength="100" required/>
+        <div class="validation-error" *ngIf="form.get('destination')?.invalid && form.get('destination')?.touched">Destination is required (Max 100 chars)</div>
+      </div>
+
+      <div class="form-group">
+        <label for="startTime">Start Time *</label>
+        <input id="startTime" type="datetime-local" formControlName="startTime" required/>
+        <div class="validation-error" *ngIf="form.get('startTime')?.invalid && form.get('startTime')?.touched">Start time is required</div>
+      </div>
+      
+    
+      <div class="form-group" *ngIf="!isEditing || !isCompleteChecked">
+        <label for="endTimePlaceholder" style="visibility: hidden;">End Time Placeholder</label>
+        <input id="endTimePlaceholder" type="text" disabled style="visibility: hidden;"/>
+      </div>
+
+     
+      <div class="form-check-group" *ngIf="isEditing">
+        <label for="isComplete">
+          <input type="checkbox" id="isComplete" [checked]="isCompleteChecked" (change)="onCompleteCheck($event)">
+          Manually Set Status to 'Completed'
+        </label>
+      </div>
+
+      <div class="form-group" *ngIf="isEditing && isCompleteChecked">
+        <label for="endTime">End Time (Required for Completion)</label>
+        <input 
+          id="endTime"
+          type="datetime-local" 
+          formControlName="endTime" 
+          required
+        />
+        <div class="validation-error" *ngIf="form.get('endTime')?.invalid && form.get('endTime')?.touched">End time is required for completion</div>
+      </div>
+
+
+      <label for="remarks">Remarks (Optional)</label>
+      <textarea id="remarks" formControlName="remarks" maxlength="500"></textarea>
+
+      <button type="submit" [disabled]="form.invalid">
+        {{ isEditing ? 'Save Trip Changes' : 'Create Trip' }}
+      </button>
+    </form>
+
+    <div class="err" *ngIf="error">{{ error }}</div>
+    <div class="success" *ngIf="success">{{ success }}</div>
+  </div>
+
+  <hr>
+
+  <div class="list">
+    <h3>Trip List</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Driver</th>
+          <th>Vehicle</th>
+          <th>Source</th>
+          <th>Destination</th>
+          <th>Status</th>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Remarks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of trips">
+          <td>{{t.tripId}}</td>
+          <td>{{t.driver?.driverName || t.driverId}}</td>
+          <td>{{t.vehicle?.vehicleName || t.vehicleId}}</td>
+          <td>{{t.source}}</td>
+          <td>{{t.destination}}</td>
+          <td>{{t.status}}</td>
+          <td>{{t.startTime | date:'short'}}</td>
+          <td>{{t.endTime | date:'short'}}</td>
+          <td>{{t.remarks}}</td>
+          <td>
+          
+            <button *ngIf="currentUser?.role==='Dispatcher'" (click)="edit(t)">Edit</button>
+            <button *ngIf="currentUser?.role==='Dispatcher'" (click)="deleteTrip(t.tripId)">Delete</button>
+            
+           
+            <button *ngIf="currentUser?.role==='Driver' && t.status==='Planned'" (click)="start(t.tripId)">Start</button>
+            <button *ngIf="currentUser?.role==='Driver' && t.status==='Active'" (click)="complete(t.tripId)">Complete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+

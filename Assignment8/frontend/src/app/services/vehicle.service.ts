@@ -17,9 +17,9 @@ export class VehicleService {
     return this.http.post(`${environment.apiUrl}/vehicle`, payload);
   }
 
-  updateVehicle(vehicleId: number, vehicleData: any): Observable<any> {
-  return this.http.put(`${this.apiUrl}/${vehicleId}`, vehicleData); 
-}
+   updateVehicle(vehicleId: number, vehicleData: any): Observable<any> {
+    return this.http.put(`${environment.apiUrl}/vehicle/${vehicleId}`, vehicleData);
+  }
 
   deleteVehicle(id: number) {
     return this.http.delete(`${environment.apiUrl}/vehicle/${id}`);

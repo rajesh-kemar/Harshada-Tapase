@@ -1,0 +1,100 @@
+<div class="page">
+
+  <h2 class="title">🚛 Vehicle Management</h2>
+
+  <!-- Create Form -->
+  <div class="card" *ngIf="currentUserRole === 'Dispatcher'">
+    <h3>Create New Vehicle</h3>
+
+    <form [formGroup]="form" (ngSubmit)="create()" class="form-grid">
+      
+      <div class="field">
+        <label>Vehicle Name</label>
+        <input formControlName="vehicleName" />
+      </div>
+
+      <div class="field">
+        <label>Vehicle Type</label>
+        <input formControlName="vehicleType" />
+      </div>
+
+      <div class="field">
+        <label>Vehicle Number (LL##-LL-####)</label>
+        <input formControlName="vehicleNumber" />
+        <span class="error" *ngIf="form.get('vehicleNumber')?.invalid && form.get('vehicleNumber')?.touched">
+          Invalid Format (Example: MH12-AB-1234)
+        </span>
+      </div>
+
+      <div class="field">
+        <label>Capacity (tons)</label>
+        <input type="number" formControlName="capacity" />
+      </div>
+
+      <button type="submit" [disabled]="form.invalid" class="btn-primary">Create Vehicle</button>
+    </form>
+  </div>
+
+  <!-- Error / Success Messages -->
+  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="success" *ngIf="success">{{ success }}</p>
+
+  <!-- List -->
+  <div class="list">
+    <h3>Available Vehicles</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Id</th><th>Name</th><th>Type</th><th>Number</th><th>Capacity</th>
+          <th *ngIf="currentUserRole === 'Dispatcher'">Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+        <ng-container *ngFor="let v of vehicles">
+
+          <!-- Normal View -->
+          <tr *ngIf="editingVehicleId !== v.vehicleId">
+            <td>{{v.vehicleId}}</td>
+            <td>{{v.vehicleName}}</td>
+            <td>{{v.vehicleType}}</td>
+            <td>{{v.vehicleNumber}}</td>
+            <td>{{v.capacity}}</td>
+
+            <td *ngIf="currentUserRole === 'Dispatcher'">
+              <button class="btn-edit" (click)="startEdit(v)">Edit</button>
+              <button class="btn-delete" (click)="delete(v.vehicleId)">Delete</button>
+            </td>
+          </tr>
+
+          <!-- Edit View -->
+          <tr *ngIf="editingVehicleId === v.vehicleId" [formGroup]="editForm" class="edit-row">
+            <td>{{v.vehicleId}}</td>
+
+            <td><input formControlName="vehicleName" /></td>
+            <td><input formControlName="vehicleType" /></td>
+
+            <td>
+              <input formControlName="vehicleNumber" />
+              <span class="error" *ngIf="editForm.get('vehicleNumber')?.errors?.['pattern']">
+                Invalid Format
+              </span>
+            </td>
+
+            <td><input type="number" formControlName="capacity" /></td>
+
+            <td>
+              <button class="btn-save" [disabled]="editForm.invalid" (click)="saveEdit()">Save</button>
+              <button class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+            </td>
+          </tr>
+
+        </ng-container>
+
+      </tbody>
+
+    </table>
+  </div>
+</div>

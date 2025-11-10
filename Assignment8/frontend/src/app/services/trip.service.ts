@@ -5,33 +5,44 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { DriverSummary } from '../models';
 
+
 @Injectable({ providedIn: 'root' })
 export class TripService {
-  private apiUrl = 'YOUR_BASE_API_URL/api/Trips';
+  private apiUrl = `${environment.apiUrl}/trip`; 
+
   constructor(private http: HttpClient) {}
 
+  // ✅ Create Trip (POST /api/trip)
   createTrip(payload: any): Observable<any> {
-    return this.http.post(`${environment.apiUrl}/trip`, payload);
+    return this.http.post(this.apiUrl, payload);
   }
 
-  // NEW: Method for Dispatcher to edit a trip
+  // ✅ Dispatcher: Edit a trip (PUT /api/trip/{tripId}) - Sends full Trip model
   editTrip(tripId: number, payload: any): Observable<any> {
-    return this.http.put(`${environment.apiUrl}/trip/${tripId}`, payload);
+    return this.http.put(`${this.apiUrl}/${tripId}`, payload);
+  }
+  
+  // ✅ Dispatcher: Delete a trip (DELETE /api/trip/{tripId})
+  deleteTrip(tripId: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${tripId}`);
   }
 
   getAllTrips(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/trip`);
+    return this.http.get<any[]>(this.apiUrl);
   }
 
   getMyTrips(): Observable<any[]> {
-    return this.http.get<any[]>(`${environment.apiUrl}/trip/my-trips`);
+    return this.http.get<any[]>(`${this.apiUrl}/my-trips`);
   }
 
+  // Driver: Update Status (PUT /api/trip/update-status/{tripId})
   updateStatus(tripId: number, status: string): Observable<any> {
-    return this.http.put(`${environment.apiUrl}/trip/update-status/${tripId}`, status, {
+    // Send the status string in the request body with application/json header
+    return this.http.put(`${this.apiUrl}/update-status/${tripId}`, JSON.stringify(status), {
       headers: { 'Content-Type': 'application/json' }
     });
   }
+  
 
   getActiveTrips(): Observable<any[]> {
     return this.http.get<any[]>(`${environment.apiUrl}/trip/active`);

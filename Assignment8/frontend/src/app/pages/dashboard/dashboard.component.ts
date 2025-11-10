@@ -247,8 +247,6 @@ export class DashboardComponent implements OnInit {
         this.stats = [
             { title: 'Completed Trips', value: completedTrips, color: 'green' },
             { title: 'Total Hours Driven', value: totalHours, color: 'blue' },
-            // Keeping two empty slots to maintain the 4-card grid layout aesthetic, 
-            // but you might consider removing them if they look out of place.
             { title: 'Trips in Progress', value: 0, color: 'orange' }, 
             { title: 'Total Distance (km)', value: 0, color: 'purple' } 
         ];

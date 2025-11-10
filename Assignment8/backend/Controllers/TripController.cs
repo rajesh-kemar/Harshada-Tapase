@@ -1,5 +1,4 @@
-﻿
-using Logistics_9.Dto;
+﻿using Logistics_9.Dto;
 using Logistics_9.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -58,11 +57,12 @@ namespace Logistics_9.Controllers
 
             return Ok(trips);
         }
-        // ✅ Get Active trips
+
+        // ✅ Get Active trips (for dashboard)
         [HttpGet("active")]
-        
         public async Task<IActionResult> GetActiveTrips()
         {
+            // Status filter changed to "Active"
             var activeTrips = await _context.Trips
                 .Where(t => t.Status == "Active")
                 .Include(x => x.Driver)
@@ -74,7 +74,6 @@ namespace Logistics_9.Controllers
 
         // ✅ Get Completed trips
         [HttpGet("completed")]
-        
         public async Task<IActionResult> GetCompletedTrips()
         {
             var completedTrips = await _context.Trips
@@ -90,8 +89,9 @@ namespace Logistics_9.Controllers
         [HttpGet("long-trips")]
         public async Task<IActionResult> GetLongTrips()
         {
+            // NOTE: EF.Functions.DateDiffHour is SQL Server specific.
             var longTrips = await _context.Trips
-                .Where(t => EF.Functions.DateDiffHour(t.StartTime, t.EndTime) > 8)
+                .Where(t => t.EndTime.HasValue && EF.Functions.DateDiffHour(t.StartTime, t.EndTime.Value) > 8)
                 .Include(x => x.Driver)
                 .Include(x => x.Vehicle)
                 .ToListAsync();
@@ -115,7 +115,7 @@ namespace Logistics_9.Controllers
             return Ok(trips);
         }
 
-        // ✅ Driver: Update trip status (Planned → InProgress → Completed)
+        // ✅ Driver: Update trip status (Planned → Active → Completed)
         [HttpPut("update-status/{tripId}")]
         [Authorize(Roles = "Driver")]
         public async Task<IActionResult> UpdateStatus(int tripId, [FromBody] string status)
@@ -130,19 +130,22 @@ namespace Logistics_9.Controllers
                 return NotFound("Trip not found or not assigned to you");
 
             // Check if the requested status is valid
-            if (status != "InProgress" && status != "Completed")
+            // Now expecting "Active" (formerly "Ongoing")
+            if (status != "Active" && status != "Completed")
             {
-                return BadRequest("Invalid status update requested.");
+                return BadRequest("Invalid status update requested. Only 'Active' or 'Completed' allowed.");
             }
 
-            if (status == "InProgress" && trip.Status == "Planned")
+            // RULE: Planned → Active
+            if (status == "Active" && trip.Status == "Planned")
             {
-                trip.Status = "InProgress";
+                trip.Status = "Active";
                 trip.StartTime = DateTime.Now;
-                // RULE: If trip is in progress, EndTime must be null
+                // RULE: If trip is active, EndTime must be null
                 trip.EndTime = null;
             }
-            else if (status == "Completed" && trip.Status == "InProgress")
+            // RULE: Active → Completed
+            else if (status == "Completed" && trip.Status == "Active")
             {
                 trip.Status = "Completed";
                 trip.EndTime = DateTime.Now; // Set EndTime upon completion
@@ -156,9 +159,6 @@ namespace Logistics_9.Controllers
 
             return Ok(new { Message = "Trip status updated successfully", trip });
         }
-        // Inside TripController
-
-        // Inside TripController
 
         /// <summary>
         /// Driver: Get a summary of completed trips and total hours driven.
@@ -179,11 +179,6 @@ namespace Logistics_9.Controllers
                 }
             }
 
-            //// SQL Server stored procedure call
-            //var summary = await _context.Set<DriverTripSummaryDto>()
-            //    .FromSqlRaw("EXEC GetDriverTripSummary @DriverId = {0}", driverId)
-            //    .ToListAsync();
-
             // SQL Server stored procedure call
             var summary = await _context.DriverTripSummaries
                 .FromSqlRaw("EXEC GetDriverTripSummary @DriverId = {0}", driverId)
@@ -194,19 +189,11 @@ namespace Logistics_9.Controllers
 
             if (result == null)
             {
-                // If the driver exists but has no completed trips, the procedure returns one row with zeros.
-                // This case should not strictly happen if the SP is written as suggested, but serves as a safeguard.
                 return NotFound($"No trip summary found for Driver ID: {driverId}.");
             }
 
             return Ok(result);
         }
-
-
-
-
-
-
 
 
         // NEW/UPDATED: Dispatcher: Edit Trip details
@@ -223,11 +210,9 @@ namespace Logistics_9.Controllers
             var existingTrip = await _context.Trips.FindAsync(tripId);
 
             if (existingTrip == null)
-                // RULE: Trip should not be deleted, so we return 404/NotFound if it doesn't exist.
                 return NotFound("Trip not found. Cannot be deleted via edit.");
 
-            // RULE: Allow editing of ALL trips (Planned, InProgress, Completed, Cancelled)
-            // We only need to check Driver/Vehicle existence:
+            // Check Driver/Vehicle existence:
             var driverExists = await _context.Drivers.AnyAsync(d => d.DriverId == updatedTrip.DriverId);
             if (!driverExists)
                 return BadRequest("Invalid DriverId");
@@ -243,26 +228,34 @@ namespace Logistics_9.Controllers
             existingTrip.Source = updatedTrip.Source;
             existingTrip.Destination = updatedTrip.Destination;
 
-            // RULE: Driver/Vehicle change means the trip remains as is.
-
             // Allow dispatcher to update times/remarks/status
             existingTrip.StartTime = updatedTrip.StartTime;
 
             // Check if the dispatcher explicitly provided a new status
             if (!string.IsNullOrEmpty(updatedTrip.Status))
             {
+                // Validate new status is one of the allowed values
+                string normalizedStatus = updatedTrip.Status.Trim();
+                if (normalizedStatus != "Planned" && normalizedStatus != "Active" &&
+                    normalizedStatus != "Completed" && normalizedStatus != "Cancelled")
+                {
+                    // IMPORTANT: You must update your DTO/Model validation to accept "Active"
+                    return BadRequest($"Invalid status: {updatedTrip.Status}. Must be 'Planned', 'Active', 'Completed', or 'Cancelled'.");
+                }
+
                 // If the dispatcher sets a status, use it.
-                existingTrip.Status = updatedTrip.Status;
+                existingTrip.Status = normalizedStatus;
 
                 // Handle EndTime based on the new status:
+                // Now using "Active"
                 if (existingTrip.Status == "Completed")
                 {
                     // If the dispatcher forces 'Completed', they must set EndTime
-                    existingTrip.EndTime = updatedTrip.EndTime ?? DateTime.Now;
+                    existingTrip.EndTime = updatedTrip.EndTime ?? existingTrip.EndTime ?? DateTime.Now;
                 }
-                else if (existingTrip.Status == "InProgress")
+                else if (existingTrip.Status == "Active")
                 {
-                    // RULE: if trip is InProgress/Ongoing, EndTime must be null
+                    // RULE: if trip is Active, EndTime must be null
                     existingTrip.EndTime = null;
                 }
                 else // Planned/Cancelled
@@ -291,4 +284,3 @@ namespace Logistics_9.Controllers
         }
     }
 }
-
